@@ -84,22 +84,24 @@ impl<'de> Deserialize<'de> for Position {
 
 #[cfg(test)]
 mod tests {
+    use approx::assert_relative_eq;
+
     use super::*;
 
     #[test]
     fn construct_2d() {
         let position = Position::from((1.0, 2.0));
-        assert_eq!(position.longitude, 1.0);
-        assert_eq!(position.latitude, 2.0);
+        assert_relative_eq!(position.longitude, 1.0);
+        assert_relative_eq!(position.latitude, 2.0);
         assert_eq!(position.altitude, None);
     }
 
     #[test]
     fn construct_3d() {
         let position = Position::from((1.0, 2.0, 3.0));
-        assert_eq!(position.longitude, 1.0);
-        assert_eq!(position.latitude, 2.0);
-        assert_eq!(position.altitude, Some(3.0));
+        assert_relative_eq!(position.longitude, 1.0);
+        assert_relative_eq!(position.latitude, 2.0);
+        assert_relative_eq!(position.altitude.unwrap(), 3.0);
     }
 
     #[test]
@@ -120,8 +122,8 @@ mod tests {
     fn deserializes_2d() {
         let json = "[1.0, 2.0]";
         let position: Position = serde_json::from_str(json).unwrap();
-        assert_eq!(position.longitude, 1.0);
-        assert_eq!(position.latitude, 2.0);
+        assert_relative_eq!(position.longitude, 1.0);
+        assert_relative_eq!(position.latitude, 2.0);
         assert_eq!(position.altitude, None);
     }
 
@@ -129,8 +131,38 @@ mod tests {
     fn deserializes_3d() {
         let json = "[1.0, 2.0, 3.0]";
         let position: Position = serde_json::from_str(json).unwrap();
-        assert_eq!(position.longitude, 1.0);
-        assert_eq!(position.latitude, 2.0);
+        assert_relative_eq!(position.longitude, 1.0);
+        assert_relative_eq!(position.latitude, 2.0);
         assert_eq!(position.altitude, Some(3.0));
+    }
+
+    #[test]
+    fn wont_deserialize_empty_array() {
+        let json = "[]"; // Empty array
+        let result: Result<Position, _> = serde_json::from_str(json);
+        assert!(
+            result.is_err(),
+            "Deserializing an array with 0 elements should result in an error."
+        );
+    }
+
+    #[test]
+    fn wont_deserialize_1_element() {
+        let json = "[1.0]"; // Array with only 1 element
+        let result: Result<Position, _> = serde_json::from_str(json);
+        assert!(
+            result.is_err(),
+            "Deserializing an array with 1 element should result in an error."
+        );
+    }
+
+    #[test]
+    fn wont_deserialze_more_than_4_elements() {
+        let json = "[1.0, 2.0, 3.0, 4.0]"; // Array with 4 elements
+        let result: Result<Position, _> = serde_json::from_str(json);
+        assert!(
+            result.is_err(),
+            "Deserializing an array with 4 elements should result in an error."
+        );
     }
 }
