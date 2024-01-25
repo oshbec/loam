@@ -7,7 +7,7 @@ mod point;
 mod polygon;
 mod position;
 
-mod prelude {
+pub mod prelude {
     pub use super::geometry_collection::*;
     pub use super::line_string::*;
     pub use super::multi_line_string::*;

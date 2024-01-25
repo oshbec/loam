@@ -31,3 +31,8 @@ let position: Position = (1.0, 2.0).into();
 ## Not deriving `Copy` for things like `LineString`
 
 - You can't... it's allocated to the heap, in this case by means of `Vec<Position>`
+
+## Everthing's based on WGS84 as a coordinate reference system
+
+- Basing this all heavily on GeoJSON
+- GeoJSON only [officially supports](https://datatracker.ietf.org/doc/html/rfc7946#section-4) WGS84

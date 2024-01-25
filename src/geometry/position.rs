@@ -24,9 +24,9 @@ impl From<(f32, f32, f32)> for Position {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Position {
-    longitude: f32,
-    latitude: f32,
-    altitude: Option<f32>,
+    pub longitude: f32,
+    pub latitude: f32,
+    pub altitude: Option<f32>,
 }
 
 impl Serialize for Position {
