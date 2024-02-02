@@ -2,16 +2,19 @@
 
 A log of decisions made about the project.
 
-## `Position` values as an `f32` instead of `f64`
+## `Position` values as an `f64`
 
-- In short, `f32` is precise enough; more precise than the reading you'd get from a GPS sensor
-- Something like `f64` would be overkill, unless you had a sub-millimeter precision use case
-- It's nice to save memory, especially when geometries might be made of *many* positions
+- `f64` is super precise
+- It might be overkill for this type of thing though
+- I don't want to worry about evaluating when f32 won't work at a global scale when calculating things like distance, and I'd rather not be converting stuff back and forth
+- Not terribly concerned about memory use
+- Might revisit in the future, but it's simpler for now to get more precision by default
+- Summary: going for simplicity in our choice of float, and it's good enough
 
 ## Constructing `Position` from 2- or 3-member tuples with `impl From`
 
 - A `::new` constructur would be odd; sometimes there are two, other times there are three values for a `Position`
-- Could be solved with a trait that gets implemented on `(f32, f32)` and `(f32, f32, f32)` which would then be accepted as a constructor argument; this is too complicated
+- Could be solved with a trait that gets implemented on `(f64, f64)` and `(f64, f64, f64)` which would then be accepted as a constructor argument; this is too complicated
 
 ```rs
 let position: Position = (1.0, 2.0).into();
@@ -20,7 +23,7 @@ let position: Position = (1.0, 2.0).into();
 ## Some standard derivations for `Position`: `Debug`, `PartialEq`, `Clone`, `Copy`
 
 - `Debug`: We want to print the thing for debugging
-- `PartialEq`: We want to compare it to other structs (and NOT `Eq` because that's not implemented for `f32`)
+- `PartialEq`: We want to compare it to other structs (and NOT `Eq` because that's not implemented for `f64`)
 - `Clone`: Allow the thing to be cloned
 - `Copy`: It's a really simple struct, so we don't need to worry about transferring ownership
 

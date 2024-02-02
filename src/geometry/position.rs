@@ -2,8 +2,8 @@ use serde::de::{self, Deserialize, Deserializer, SeqAccess, Visitor};
 use serde::ser::{Serialize, SerializeTuple, Serializer};
 use std::fmt;
 
-impl From<(f32, f32)> for Position {
-    fn from(coords: (f32, f32)) -> Self {
+impl From<(f64, f64)> for Position {
+    fn from(coords: (f64, f64)) -> Self {
         Position {
             longitude: coords.0,
             latitude: coords.1,
@@ -12,8 +12,8 @@ impl From<(f32, f32)> for Position {
     }
 }
 
-impl From<(f32, f32, f32)> for Position {
-    fn from(coords: (f32, f32, f32)) -> Self {
+impl From<(f64, f64, f64)> for Position {
+    fn from(coords: (f64, f64, f64)) -> Self {
         Position {
             longitude: coords.0,
             latitude: coords.1,
@@ -24,9 +24,9 @@ impl From<(f32, f32, f32)> for Position {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Position {
-    pub longitude: f32,
-    pub latitude: f32,
-    pub altitude: Option<f32>,
+    pub longitude: f64,
+    pub latitude: f64,
+    pub altitude: Option<f64>,
 }
 
 impl Serialize for Position {
@@ -62,13 +62,13 @@ impl<'de> Deserialize<'de> for Position {
             where
                 V: SeqAccess<'de>,
             {
-                let longitude: f32 = seq
+                let longitude: f64 = seq
                     .next_element()?
                     .ok_or_else(|| de::Error::invalid_length(0, &self))?;
-                let latitude: f32 = seq
+                let latitude: f64 = seq
                     .next_element()?
                     .ok_or_else(|| de::Error::invalid_length(1, &self))?;
-                let altitude: Option<f32> = seq.next_element()?;
+                let altitude: Option<f64> = seq.next_element()?;
 
                 Ok(Position {
                     longitude,
