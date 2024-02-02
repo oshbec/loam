@@ -1,1 +1,1 @@
-mod distance;
+pub mod distance;
